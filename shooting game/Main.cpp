@@ -27,7 +27,7 @@ void TitleScene(GAMESCENE& scene)
 
 void PlayScene(GAMESCENE& scene)
 {
-
+	
 	TextureAsset(U"PLAYSCENE").resized(Scene::Size()).draw();
 }
 
@@ -43,8 +43,10 @@ void GameClear(GAMESCENE& scene)
 
 vector<gameChara*> objList;
 void PlayerVSEnemies(Player* player,EnemyMaster* enemyM);
-void EnemiesVSPlayer(Bullet* bullet, Player* player);
-//void EnemiesBulletVSPlayerBullet(Bullet* pbullet, Bullet* ebullet);
+void EnemiesVSPlayer(EnemyMaster* enemyM, Player* player);
+
+//void EnemiesVSPlayer(Bullet* bullet, Player* player);
+void EnemiesBulletVSPlayerBullet(EnemyMaster* enemyM,Player* player);
 
 void Main()
 {
@@ -61,20 +63,20 @@ void Main()
 	TextureAsset::Register(U"TITLESCENE", U"titlescene.png");
 	TextureAsset::Register(U"PLAYSCENE", U"playscene.png");
 	TextureAsset::Register(U"GAMECLEARSCENE", U"clearscene.png");
-	TextureAsset::Register(U"GAMEOVERSCENE", U"gameoverscene.jpg");
+	TextureAsset::Register(U"GAMEOVERSCENE", U"gameoverscene.png");
 	FontAsset::Register(U"GTFONT", 50, Typeface::Heavy);
 	FontAsset::Register(U"TFONT", 30, Typeface::Heavy);
 
 	//何も引数をかかないと、引数無しのコンストラクタ
 
-	Player* player = nullptr;
-	player = new Player;
+	/*Player* player = nullptr;*/
+	Player* player = new Player;
 	player->Initialize();
 	objList.push_back(player);
 
 	Enemy* enemy = new Enemy;
-	/*enemy->Initialize();*/
-	objList.push_back(enemy);
+	//enemy->Initialize();
+	/*objList.push_back(enemy);*/
 
 	EnemyMaster* enemyM = new EnemyMaster;
 	enemyM->InitializeEnemies();
@@ -87,12 +89,15 @@ void Main()
 			switch (gamescene)
 			{
 			case TITLE:
+			{
 				if (MouseL.down())
 				{
 					gamescene = GAMESCENE::PLAY;
 				}
 				break;
+			}
 			case PLAY:
+			{
 				if (player->isAlive_ == false)
 				{
 					gamescene = GAMESCENE::GAMEOVER;
@@ -102,15 +107,23 @@ void Main()
 					gamescene = GAMESCENE::GAMECLEAR;
 				}
 				break;
+			}
 			case GAMEOVER:
-				gamescene = GAMESCENE::PLAY;
+			{
+				if (MouseL.down())
+				{
+					gamescene = GAMESCENE::PLAY;
+				}
 				break;
+			}	
 			case GAMECLEAR:
+			{
 				if (MouseL.down())
 				{
 					gamescene = GAMESCENE::TITLE;
 				}
-					break;
+				break;
+			}
 			default:
 				gamescene = GAMESCENE::TITLE;
 				break;
@@ -125,14 +138,18 @@ void Main()
 		}
 		case PLAY:
 		{
+			/*Print << player->isAlive_;*/
 			PlayerVSEnemies(player, enemyM);
-			EnemiesVSPlayer(enemy->GetBullet(), player);
+			EnemiesVSPlayer(enemyM, player);
+			EnemiesBulletVSPlayerBullet(enemyM, player);
+			/*EnemiesVSPlayer(enemy->GetBullet(), player);*/
 
 			for (auto& theI : objList)
 			{
 				theI->UpDate();
 			}
-			TextureAsset(U"PLAYSCENE").resized(Scene::Size()).draw();
+			/*TextureAsset(U"PLAYSCENE").resized(Scene::Size()).draw();*/
+			PlayScene(gamescene);
 			for (auto& theI : objList)
 			{
 				theI->Draw();
@@ -146,6 +163,8 @@ void Main()
 		}
 		case GAMEOVER:
 		{
+			/*TextureAsset(U"GAMEOVERSCENE").resized(Scene::Size()).draw();*/
+			GameOverScene(gamescene);
 			break;
 		}
 		default:
@@ -193,32 +212,57 @@ void PlayerVSEnemies(Player* player, EnemyMaster* enemyM)
 		}
 	}
 }
-
-void EnemiesVSPlayer(Bullet* bullet, Player* player)
-{
-		if (bullet->isActive() == false)
-			return;
-		if (bullet->IsMyRectHit(player->GetCharaRect()))
-		{
-				ExplosionEffect* explosion = new ExplosionEffect(player->pos_);
-				objList.push_back(explosion);
-				bullet->DeActivate();
-				player->DeActivate();
-		}
-}
-
-//void EnemiesBulletVSPlayerBullet(Player* player, Bullet* ebullet)
+//void EnemiesVSPlayer(EnemyMaster* enemyM, Player* player)
 //{
-//	for (auto& theJ : player->GetGunBullet())
+//	for (auto& theI : enemyM->enemies)
 //	{
-//		if (!theJ->isActive())
-//			continue;
-//		if (theJ->IsMyRectHit(ebullet->GetCharaRect()))
+//		for (auto& theJ : enemyM->GetBullet())
 //		{
-//			ExplosionEffect* explosion = new ExplosionEffect(ebullet->pos_);
-//			objList.push_back(explosion);
-//			theJ->DeActivate();
-//			ebullet->DeActivate();
+//			if (player->IsMyRectHit(theJ->GetCharaRect()))
+//			{
+//				ExplosionEffect* explosion = new ExplosionEffect(player->pos_);
+//				objList.push_back(explosion);
+//				player->DeActivate();
+//				theJ->DeActivate();
+//			}
 //		}
 //	}
+//	
 //}
+
+void EnemiesVSPlayer(EnemyMaster* enemyM, Player* player)
+{
+	for (auto& theJ : enemyM->enemies)
+	{
+		if (!theJ->isActive())
+			continue;
+			if (player->IsMyRectHit(theJ->GetBullet()->GetCharaRect()))
+			{
+				ExplosionEffect* explosion = new ExplosionEffect(player->pos_);
+				objList.push_back(explosion);
+				theJ->GetBullet()->DeActivate();
+				player->DeActivate();
+			}
+	}
+}
+
+void EnemiesBulletVSPlayerBullet(EnemyMaster* enemyM, Player* player)
+{
+	for (auto& theJ : player->GetGunBullet())
+	{
+		if (!theJ->isActive())
+			continue;
+		for (auto& theI : enemyM->enemies)
+		{
+			if (!theI->isActive())
+				continue;
+			if (theJ->IsMyRectHit(theI->GetBullet()->GetCharaRect()))
+			{
+				/*ExplosionEffect* explosion = new ExplosionEffect(theI->pos_);
+				objList.push_back(explosion);*/
+				theJ->DeActivate();
+				theI->GetBullet()->DeActivate();
+			}
+		}
+	}
+}

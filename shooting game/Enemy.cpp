@@ -2,7 +2,8 @@
 #include "enemy.h"
 #include"Bullet.h"
 
-Enemy::Enemy(Vec2 _pos) :gameChara()
+Enemy::Enemy(Vec2 _pos)
+	:gameChara()
 {
 	pos_ = _pos;
 	moveDir_ = { 1,0 };
@@ -11,13 +12,14 @@ Enemy::Enemy(Vec2 _pos) :gameChara()
 	isAlive_ = true;
 	SetCharaRect(SizeF{ ENEMY_RECT_SIZE,ENEMY_RECT_SIZE });
 	gun_ = new Bullet();
-	gun_->SetCharaRect(gun_->tex_.size());
+	gun_->SetCharaRect(SizeF{ ENEMY_BULLET_RECT_SIZE,ENEMY_BULLET_RECT_SIZE });
 	/*gun_->moveDir_ = { 0,1 };*/
 	gun_->moveDir_ = { 1,0 };
 	gun_->speed_ = 100.0;
 }
 
-Enemy::Enemy() :gameChara()
+Enemy::Enemy()
+	:gameChara()
 {
 	pos_ = { -800,-800 };
 	speed_ = ENEMY_MOVE_SPEED;
@@ -26,7 +28,7 @@ Enemy::Enemy() :gameChara()
 	moveDir_ = { 1,0 };
 	isAlive_ = true;
 	gun_ = new Bullet();
-	gun_->SetCharaRect(gun_->tex_.size());
+	gun_->SetCharaRect(SizeF{ENEMY_BULLET_RECT_SIZE,ENEMY_BULLET_RECT_SIZE});
 	/*gun_->moveDir_ = {0,1};*/
 	gun_->moveDir_ = { 1,0 };
 	gun_->speed_ = 100.0;
@@ -34,7 +36,20 @@ Enemy::Enemy() :gameChara()
 
 Enemy::~Enemy()
 {
+	
 }
+
+//void Enemy::Initialize()
+//{
+//	Texture pGunTex = TextureAsset(U"bullet.png");
+//	gun_ = new Bullet(pGunTex);
+//	gun_->DeActivate();
+//	gun_->SetPosition(BULLET_INIT_POS);
+//	gun_->SetCharaRect(SizeF{ BULLET_RECT_SIZE,BULLET_RECT_SIZE });
+//	/*gun_->moveDir_ = {0,1};*/
+//	gun_->moveDir_ = { 1,0 };
+//	gun_->speed_ = 100.0;
+//}
 
 //void Enemy::MoveDown()
 //{
@@ -54,7 +69,7 @@ void Enemy::EnemyShot()
 	{
 		gun_->SetPosition(pos_);//敵のポジションから発射
 		gun_->Activate();
-		gun_->SetCharaRect(gun_->tex_.size());
+		gun_->SetCharaRect(SizeF{ ENEMY_BULLET_RECT_SIZE,ENEMY_BULLET_RECT_SIZE });
 	}
 }
 

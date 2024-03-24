@@ -12,6 +12,8 @@ const Vec2 BULLET_INIT_POS{ 0,-BULLET_SIZE * 2 };
 
 class Bullet : public gameChara
 {
+	SizeF renderSize_;
+	SizeF rectSize_;
 public:
 	Bullet(Vec2 _pos);
 	Bullet(Texture& _tex);

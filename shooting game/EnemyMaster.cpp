@@ -83,7 +83,11 @@ void EnemyMaster::InitializeEnemies()
 		for (int i = 0; i < EnemyLine; i++)
 		{
 			Enemy* enemy = new Enemy;
+			/*enemy->Initialize();*/
 			enemies.push_back(enemy);
+			/*Bullet* bullet = nullptr;
+			bullet = new Bullet();
+			gun_.push_back(bullet);*/
 		}
 	}
 
@@ -99,7 +103,7 @@ void EnemyMaster::InitializeEnemies()
 			enemies[j * EnemyLine + i]->isAlive_ = true;
 			enemies[j * EnemyLine + i]->tex_ = TextureAsset(U"ENEMY");
 			enemies[j * EnemyLine + i]->moveDir_ = { 0.0,1.0 };
-			enemies[j * EnemyLine + i]->SetCharaRect(SizeF{ ENEMY_SIZE,ENEMY_SIZE });	
+			enemies[j * EnemyLine + i]->SetCharaRect(SizeF{ ENEMY_SIZE,ENEMY_SIZE });
 		}
 
 		speed_ = ENEMY_MOVE_SPEED;

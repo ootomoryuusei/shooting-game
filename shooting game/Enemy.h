@@ -11,6 +11,7 @@ const int EnemyLines = 5;
 const int EnemyNum = { EnemyLine * EnemyLines };
 const double ENEMY_MOVE_SPEED = { ENEMY_SIZE / 2 };
 const double ENEMY_RECT_SIZE = { 45.0 };
+const double ENEMY_BULLET_RECT_SIZE{ 17.0 };
 
 
 
@@ -21,6 +22,7 @@ public:
 	Enemy(Vec2 _pos);
 	Enemy();
 	~Enemy();
+	/*void Initialize();*/
 	void FlipMove() { moveDir_ = -moveDir_; }
 	void MoveDown();
 	void EnemyShot();

@@ -2,33 +2,36 @@
 #include "Bullet.h"
 
 Bullet::Bullet(Vec2 _pos)
+	:gameChara(), rectSize_(SizeF{ BULLET_RECT_SIZE ,BULLET_RECT_SIZE})
 {
 	pos_ = _pos;
 	speed_ = BULLET_MOVE_SPEED;
 	tex_ = TextureAsset(U"BULLET");
-	SetCharaRect(SizeF{ BULLET_RECT_SIZE,BULLET_RECT_SIZE });
+	SetCharaRect(rectSize_);
 	/*moveDir_ = { 0,-1 };*/
 	moveDir_ = { -1,0 };
 	isAlive_ = true;
 }
 
 Bullet::Bullet(Texture& _tex)
+	:gameChara(), rectSize_(SizeF{ BULLET_RECT_SIZE ,BULLET_RECT_SIZE })
 {
 	pos_ = BULLET_INIT_POS;
 	speed_ = BULLET_MOVE_SPEED;
 	tex_ = _tex;
-	SetCharaRect(SizeF{ BULLET_RECT_SIZE,BULLET_RECT_SIZE });
+	SetCharaRect(rectSize_);
 	/*moveDir_ = { 0,-1 };*/
 	moveDir_ = { -1,0 };
 	isAlive_ = false;
 }
 
 Bullet::Bullet()
+	:gameChara(), rectSize_(SizeF{ BULLET_RECT_SIZE ,BULLET_RECT_SIZE })
 {
 	pos_ = BULLET_INIT_POS;
 	speed_ = BULLET_MOVE_SPEED;
 	tex_ = TextureAsset(U"BULLET");
-	SetCharaRect(SizeF{ BULLET_RECT_SIZE,BULLET_RECT_SIZE });
+	SetCharaRect(rectSize_);
 	/*moveDir_ = { 0,-1 };*/
 	moveDir_ = { -1,0 };
 	isAlive_ = true;
